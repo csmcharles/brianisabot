@@ -5,6 +5,34 @@ const brian = new Discord.Client();
 const TOKEN = process.env.API_TOKEN;
 const ID_PUBLIC = 307961074626330624;
 
+const express = require('express');
+const app = express();
+
+// set the port of our application
+// process.env.PORT lets the port be set by Heroku
+const port = process.env.PORT || 8000;
+
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
+// make express look in the `public` directory for assets (css/js/img)
+app.use(express.static(__dirname + '/public'));
+
+// set the home page route
+app.get('/', (request, response) => {
+    // ejs render automatically looks in the views folder
+    response.render('index');
+});
+
+app.listen(port, () => {
+    // will echo 'Our app is running on http://localhost:5000 when run locally'
+    console.log('Our app is running on http://localhost:' + port);
+});
+
+setInterval(() => {
+    http.get('http://brian-bot.herokuapp.com');
+}, 900000);
+
 //login to discord
 brian.login(TOKEN);
 
@@ -18,14 +46,14 @@ brian.on('ready', () => {
 
 //runs any time a message is sent
 brian.on('message', (msg) => {
-    var triggers = ['derek', 'perdi', 'feliz cumpleaños', 'himlich', 'greer', 'cumpleaños', 'perdí'];
+    let triggers = ['derek', 'perdi', 'feliz cumpleaños', 'himlich', 'greer', 'cumpleaños', 'perdí'];
     triggers.forEach(function (trig) {
-        if (msg.content.toLowerCase().includes(trig) && msg.author.id != ID_PUBLIC) {
+        if (msg.content.toLowerCase().includes(trig) && msg.author.id !== ID_PUBLIC) {
             msg.reply('Perdí...');
         }
     });
 
-    var brianTriggers = ['whistles', 'the old man and the sea', 'tomats'];
+    let brianTriggers = ['whistles', 'the old man and the sea', 'tomats'];
 
     brianTriggers.forEach(function (trig) {
         if (msg.content.toLowerCase().includes(trig)) {
@@ -33,9 +61,9 @@ brian.on('message', (msg) => {
         }
     });
 
-    var brianHello = ['hey', 'hello', 'hi', 'yo', 'sup', 'ey', 'oye'];
+    let brianHello = ['hey', 'hello', 'hi', 'yo', 'sup', 'ey', 'oye'];
 
-    var e = {};
+    let e = {};
     brianHello.some(function (trig) {
         if ((msg.isMentioned('307961074626330624') && msg.content.toLowerCase().includes(trig)) || msg.content.toLowerCase().includes(trig + ' brian')) {
             msg.channel.sendMessage('Hey buddy!');
@@ -47,37 +75,37 @@ brian.on('message', (msg) => {
 
     //all / commands
     if (msg.content.toLowerCase().startsWith('/')) {
-        var cmd = msg.content.toLowerCase().replace('/', '');
-        var cmdInfo = '\nSource: ' + msg.author.username + '\nTime: ' + msg.createdAt + '\n';
+        let cmd = msg.content.toLowerCase().replace('/', '');
+        let cmdInfo = '\nSource: ' + msg.author.username + '\nTime: ' + msg.createdAt + '\n';
         switch (true) {
-            case cmd == 'mark':
-            case cmd == 'nota':
+            case cmd === 'mark':
+            case cmd === 'nota':
                 console.log('/mark' + cmdInfo);
-                msg.reply('You got a ' + highestRand(1, 7, 7));
+                msg.reply('You got a ' + highestRand(7, 7));
                 break;
             case cmd.startsWith('weather '):
                 console.log('/weather' + cmdInfo);
-                var location = cmd.replace('weather ', '');
-                if (location != '') {
-                    var url = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&APPID=c8c1e154402ef55a0e2699a2bbc9fa34";
-                    var kelvin = -273.15;
-                    var message = '';
+                let location = cmd.replace('weather ', '');
+                if (location !== '') {
+                    let url = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&APPID=c8c1e154402ef55a0e2699a2bbc9fa34";
+                    let kelvin = -273.15;
+                    let message = '';
                     getJSON(url, function (data) {
-                        if (data.cod == 200) {
+                        if (data.cod === 200) {
                             function getWeatherDesc(weather) {
-                                var line = '';
+                                let line = '';
                                 weather.forEach(function (desc, id, array) {
-                                    if (id != array.length - 1) {
-                                        if (id == 0) {
-                                            var first = desc.description.charAt(0).toUpperCase() + desc.description.slice(1);
+                                    if (id !== array.length - 1) {
+                                        if (id === 0) {
+                                            let first = desc.description.charAt(0).toUpperCase() + desc.description.slice(1);
                                             line += first + ' and ';
 
                                         } else {
                                             line += desc.description + ' and ';
                                         }
                                     } else {
-                                        if (array.length == 1) {
-                                            var first = desc.description.charAt(0).toUpperCase() + desc.description.slice(1);
+                                        if (array.length === 1) {
+                                            let first = desc.description.charAt(0).toUpperCase() + desc.description.slice(1);
                                             line += first + '.';
                                         } else {
                                             line += desc.description + '.';
@@ -87,7 +115,7 @@ brian.on('message', (msg) => {
                                 return line;
                             }
 
-                            var msgLines = [
+                            let msgLines = [
                                 "Here's the weather in " + data.name + " today:",
                                 getWeatherDesc(data.weather) + " It's currently " + Math.round(data.main.temp + kelvin) + "°C."
                             ];
@@ -104,12 +132,12 @@ brian.on('message', (msg) => {
                 }
                 break;
             case cmd.startsWith('ask '):
-                var query = cmd.replace('ask ', '').replace(/ /g, '+');
+                let query = cmd.replace('ask ', '').replace(/ /g, '+');
                 console.log('/ask' + cmdInfo + 'Query: ' + cmd.replace('ask ', '') + '\n');
                 getJSON("http://api.duckduckgo.com/?q=" + query + "&format=json", function (response) {
-                    header = (response.Heading != '' ? "**" + response.Heading + "**\n\n" : '');
-                    abstract = (response.AbstractURL != '' ? response.AbstractURL : '');
-                    if(response.Heading != '' || response.Abstract != ''){
+                    header = (response.Heading !== '' ? "**" + response.Heading + "**\n\n" : '');
+                    abstract = (response.AbstractURL !== '' ? response.AbstractURL : '');
+                    if(response.Heading !== '' || response.Abstract !== ''){
                         msg.channel.sendMessage(header + abstract);
                     } else if(response.Answer != ''){
                         msg.channel.sendMessage(header + response.Answer);
@@ -118,8 +146,8 @@ brian.on('message', (msg) => {
                     }
                 })
                 break;
-            case cmd == 'help':
-            case cmd == 'brian':
+            case cmd === 'help':
+            case cmd === 'brian':
                 console.log('/help' + cmdInfo);
                 msg.channel.sendMessage("*Hey guys!* " + msg.guild.emojis.get('302665504999604224') +
                     "\n\nHere are some of the things I do:" +
@@ -129,7 +157,7 @@ brian.on('message', (msg) => {
                     "\n•**/weather <city-name>:** Gets the weather in that city");
                 break;
             default:
-                console.log(msg.content + cmdInfo)
+                console.log(msg.content + cmdInfo);
                 msg.channel.sendMessage("*Sorry guys, not a good idea*\n\nI didn't recognize that command.");
                 break;
         }
@@ -164,16 +192,14 @@ function getHTTP(url, callback) {
 }
 
 //random number generator for the mark generator
-function highestRand(min, max, c) {
-    min = Math.ceil(min);
+function highestRand(max, c) {
     max = Math.floor(max);
-    var max = 0;
-    var curr;
-    for (var i = 0; i < c; i++) {
+    let curr;
+    for (let i = 0; i < c; i++) {
         curr = Math.round((Math.random() * 60) + 10) / 10;
         if (curr > max) {
             max = curr;
         }
     }
     return max;
-};
+}
