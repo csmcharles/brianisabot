@@ -47,32 +47,34 @@ brian.on('ready', () => {
 
 //runs any time a message is sent
 brian.on('message', (msg) => {
+    //losing the game triggers
     let triggers = ['derek', 'perdi', 'feliz cumpleaños', 'himlich', 'greer', 'cumpleaños', 'perdí'];
-    triggers.forEach(function (trig) {
+    for (let trig of triggers) {
         if (msg.content.toLowerCase().includes(trig) && msg.author.id !== ID_PUBLIC) {
             msg.reply('Perdí...');
+            break;
         }
-    });
+    }
 
+    //whistling triggers
     let brianTriggers = ['whistles', 'the old man and the sea', 'tomats'];
-
-    brianTriggers.forEach(function (trig) {
+    for (let trig of brianTriggers) {
         if (msg.content.toLowerCase().includes(trig)) {
             msg.channel.sendMessage(brian.emojis.get('302665504999604224') + ' *I THOUGHT YOU KNEW BY NOW* ' + brian.emojis.get('302665504999604224'));
+            break;
         }
-    });
+    }
 
+    //buddy triggers
     let brianHello = ['hey', 'hello', 'hi', 'yo', 'sup', 'ey', 'oye'];
-
-    let e = {};
-    brianHello.some(function (trig) {
+        brianHello.some(function (trig) {
         if ((msg.isMentioned('307961074626330624') && msg.content.toLowerCase().includes(trig)) || msg.content.toLowerCase().includes(trig + ' brian')) {
             msg.channel.sendMessage('Hey buddy!');
             return true;
         } else {
             return false;
         }
-    })
+    });
 
     //all / commands
     if (msg.content.toLowerCase().startsWith('/')) {
