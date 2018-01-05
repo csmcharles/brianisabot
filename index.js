@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const request = require('request');
 const brian = new Discord.Client();
 const TOKEN = process.env.API_TOKEN;
-const ID_PUBLIC = 307961074626330624;
+const brianID = process.env.PUBLIC_ID;
 
 const express = require('express');
 const app = express();
@@ -50,7 +50,8 @@ brian.on('message', (msg) => {
     //losing the game triggers
     let triggers = ['derek', 'perdi', 'feliz cumpleaños', 'himlich', 'greer', 'cumpleaños', 'perdí'];
     for (let trig of triggers) {
-        if (msg.content.toLowerCase().includes(trig) && msg.author.id !== ID_PUBLIC) {
+        if (msg.content.toLowerCase().includes(trig) && msg.author.id !== brianID) {
+            console.log(msg.author.id, brianID)
             msg.reply('Perdí...');
             break;
         }
