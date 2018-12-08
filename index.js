@@ -76,7 +76,7 @@ app.listen(port, () => {
                 case cmd === 'mark':
                 case cmd === 'nota':
                     console.log('/mark' + cmdInfo);
-                    msg.reply('You got a ' + highestRand(7, 7));
+                    msg.reply('You got a ' + highestRand(5, 7));
                     break;
                 case cmd.startsWith('weather '):
                     console.log('/weather' + cmdInfo);
