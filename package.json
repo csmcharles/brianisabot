@@ -4,6 +4,7 @@
   "description": "its a bot",
   "main": "index.js",
   "scripts": {
+    "prestart": "yarn install",
     "start": "node index.js"
   },
   "keywords": [
