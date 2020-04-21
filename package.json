@@ -4,7 +4,6 @@
   "description": "its a bot",
   "main": "index.js",
   "scripts": {
-    "prestart": "yarn install",
     "start": "node index.js"
   },
   "keywords": [
@@ -20,7 +19,6 @@
     "discord.js": "^11.4.2",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "request": "^2.88.0",
-    "yarn": "^1.12.3"
+    "request": "^2.88.0"
   }
 }
