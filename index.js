@@ -131,11 +131,23 @@ app.listen(port, () => {
                     console.log('/ask' + cmdInfo + 'Query: ' + cmd.replace('ask ', '') + '\n');
                     getJSON("http://api.duckduckgo.com/?q=" + query + "&format=json", function (response) {
                         header = (response.Heading !== '' ? "**" + response.Heading + "**\n\n" : '');
-                        abstract = (response.AbstractURL !== '' ? response.AbstractURL : '');
-                        if (response.Heading !== '' || response.Abstract !== '') {
+                        abstract = (response.AbstractURL || '');
+                        infobox = (response.Infobox || '');
+                        answer = (response.Answer || '');
+                        
+                        if (infobox.content && infobox.content.length > 0) {
+                            infobox = '\n\n' + infobox.content
+                                .filter(item => item.data_type === 'string')
+                                .map(item => `**${item.label}:** ${item.value}`)
+                                .join('\n')
+                        }
+                        
+                        if (header && abstract && infobox) {
+                            msg.channel.sendMessage(header + abstract + infobox);
+                        } else if (header && abstract) {
                             msg.channel.sendMessage(header + abstract);
-                        } else if (response.Answer != '') {
-                            msg.channel.sendMessage(header + response.Answer);
+                        } else if (header && answer) {
+                            msg.channel.sendMessage(header + answer);
                         } else {
                             msg.channel.sendMessage("*Sorry guys, not a good idea*\n\nI didn't quite get that...");
                         }
