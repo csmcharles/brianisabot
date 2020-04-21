@@ -170,6 +170,11 @@ app.listen(port, () => {
             }
         }
     });
+    
+    // Ping the 
+    setInterval(() => {
+        getHTTP('https://brian-is-a-bot.herokuapp.com', () => {})
+    }, 1500000);
 });
 
 //gets JSON from url provided
