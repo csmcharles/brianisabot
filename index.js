@@ -130,20 +130,20 @@ app.listen(port, () => {
                     let query = cmd.replace('ask ', '').replace(/ /g, '+');
                     console.log('/ask' + cmdInfo + 'Query: ' + cmd.replace('ask ', '') + '\n');
                     getJSON("http://api.duckduckgo.com/?q=" + query + "&format=json", function (response) {
-                        header = (response.Heading !== '' ? "**" + response.Heading + "**\n\n" : '');
-                        abstract = (response.AbstractURL || '');
-                        infobox = (response.Infobox || '');
-                        answer = (response.Answer || '');
+                        let header = (response.Heading !== '' ? "**" + response.Heading + "**\n\n" : '');
+                        let abstract = (response.AbstractURL || '');
+                        let infobox = (response.Infobox || '');
+                        let answer = (response.Answer || '');
                         
                         if (infobox.content && infobox.content.length > 0) {
-                            infobox = '\n\n' + infobox.content
+                            infobox = infobox.content
                                 .filter(item => item.data_type === 'string')
                                 .map(item => `**${item.label}:** ${item.value}`)
-                                .join('\n')
+                                .join('\n') + '\n\n';
                         }
                         
                         if (header && abstract && infobox) {
-                            msg.channel.sendMessage(header + abstract + infobox);
+                            msg.channel.sendMessage(header + infobox + abstract);
                         } else if (header && abstract) {
                             msg.channel.sendMessage(header + abstract);
                         } else if (header && answer) {
